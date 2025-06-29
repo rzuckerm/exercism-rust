@@ -1,21 +1,17 @@
-use std::collections::HashMap;
-
-pub struct CodonsInfo<'a>(HashMap<&'a str, &'a str>);
-
-impl<'a> CodonsInfo<'a> {
-    pub fn name_for(&self, codon: &str) -> Option<&'a str> {
-        self.0.get(&codon).copied()
-    }
-
-    pub fn of_rna(&self, rna: &str) -> Option<Vec<&'a str>> {
-        rna.as_bytes()
-            .chunks(3)
-            .map(|x| self.name_for(std::str::from_utf8(x).unwrap_or("")))
-            .take_while(|&x| x != Some("stop codon"))
-            .collect()
-    }
-}
-
-pub fn parse<'a>(pairs: Vec<(&'a str, &'a str)>) -> CodonsInfo<'a> {
-    CodonsInfo(HashMap::from_iter(pairs))
+pub fn translate(rna: &str) -> Option<Vec<&str>> {
+    rna.as_bytes()
+        .chunks(3)
+        .map(|x| match x {
+            b"AUG" => Some("Methionine"),
+            b"UUU" | b"UUC" => Some("Phenylalanine"),
+            b"UUA" | b"UUG" => Some("Leucine"),
+            b"UCU" | b"UCC" | b"UCA" | b"UCG" => Some("Serine"),
+            b"UAU" | b"UAC" => Some("Tyrosine"),
+            b"UGU" | b"UGC" => Some("Cysteine"),
+            b"UGG" => Some("Tryptophan"),
+            b"UAA" | b"UAG" | b"UGA" => Some("STOP"),
+            _ => None,
+        })
+        .take_while(|&x| x.is_none() || x != Some("STOP"))
+        .collect()
 }
