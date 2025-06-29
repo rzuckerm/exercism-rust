@@ -5,16 +5,15 @@ pub enum Error {
 }
 
 pub fn lsp(string_digits: &str, span: usize) -> Result<u64, Error> {
-    if span == 0 {
-        return Ok(1);
+    match span {
+        0 => Ok(1),
+        _ => string_digits
+            .chars()
+            .map(|c| c.to_digit(10).ok_or(Error::InvalidDigit(c)))
+            .collect::<Result<Vec<u32>, Error>>()?
+            .windows(span)
+            .map(|w| w.iter().map(|&x| x as u64).product())
+            .max()
+            .ok_or(Error::SpanTooLong),
     }
-
-    string_digits
-        .chars()
-        .map(|c| c.to_digit(10).ok_or(Error::InvalidDigit(c)))
-        .collect::<Result<Vec<u32>, Error>>()?
-        .windows(span)
-        .map(|w| w.iter().map(|&x| x as u64).product())
-        .max()
-        .ok_or(Error::SpanTooLong)
 }
