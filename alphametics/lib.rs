@@ -44,6 +44,7 @@ pub fn solve(input: &str) -> Option<HashMap<char, u8>> {
     let factors: Vec<i64> = calc_factors(&addends, &letters)
         .iter()
         .zip(calc_factors(&vec![sum], &letters).iter())
+        .into_iter()
         .map(|(&a, &b)| a - b)
         .collect();
 
@@ -66,7 +67,7 @@ pub fn solve(input: &str) -> Option<HashMap<char, u8>> {
     None
 }
 
-fn calc_factors(words: &Vec<&str>, letters: &[char]) -> Vec<i64> {
+fn calc_factors(words: &Vec<&str>, letters: &Vec<char>) -> Vec<i64> {
     let mut letter_multipliers: Vec<i64> = vec![0; letters.len()];
     for &word in words {
         for (n, letter) in word.chars().rev().enumerate() {
@@ -78,7 +79,7 @@ fn calc_factors(words: &Vec<&str>, letters: &[char]) -> Vec<i64> {
     letter_multipliers
 }
 
-fn calc_value(numbers: &[u8], factors: &[i64]) -> i64 {
+fn calc_value(numbers: &Vec<u8>, factors: &Vec<i64>) -> i64 {
     numbers
         .iter()
         .zip(factors.iter())
