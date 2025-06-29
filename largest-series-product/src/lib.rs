@@ -5,6 +5,10 @@ pub enum Error {
 }
 
 pub fn lsp(string_digits: &str, span: usize) -> Result<u64, Error> {
+    if span == 0 {
+        return Ok(1);
+    }
+
     string_digits
         .chars()
         .map(|c| c.to_digit(10).ok_or(Error::InvalidDigit(c)))
