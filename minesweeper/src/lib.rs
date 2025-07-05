@@ -2,24 +2,24 @@ pub fn annotate(minefield: &[&str]) -> Vec<String> {
     (0..minefield.len())
         .map(|r| {
             (0..minefield[r].len())
-                .map(|c| get_minefield_char(minefield, r as i32, c as i32))
+                .map(|c| get_minefield_char(minefield, r, c))
                 .collect::<String>()
         })
         .collect::<Vec<String>>()
 }
 
-fn get_minefield_char(minefield: &[&str], r: i32, c: i32) -> char {
-    match minefield[r as usize].as_bytes()[c as usize] {
+fn get_minefield_char(minefield: &[&str], r: usize, c: usize) -> char {
+    match minefield[r].as_bytes()[c] {
         b'*' => '*',
         _ => {
-            let height: i32 = minefield.len() as i32;
-            let width: i32 = minefield[r as usize].len() as i32;
+            let height = minefield.len();
+            let width = minefield[r].len();
             match (-1..=1)
-                .flat_map(|r_offset| (-1..=1).map(move |c_offset| (r_offset, c_offset)))
-                .filter(|&(r_offset, c_offset)| r_offset != 0 || c_offset != 0)
-                .map(|(r_offset, c_offset)| (r + r_offset, c + c_offset))
-                .filter(|&(r, c)| r >= 0 && r < height && c >= 0 && c < width)
-                .filter(|&(r, c)| minefield[r as usize].as_bytes()[c as usize] == b'*')
+                .flat_map(|dr| (-1..=1).map(move |dc| (dr, dc)))
+                .filter(|&(dr, dc)| dr != 0 || dc != 0)
+                .map(|(dr, dc)| (r.wrapping_add_signed(dr), c.wrapping_add_signed(dc)))
+                .filter(|&(r, c)| r < height && c < width)
+                .filter(|&(r, c)| minefield[r].as_bytes()[c] == b'*')
                 .count()
             {
                 0 => ' ',
