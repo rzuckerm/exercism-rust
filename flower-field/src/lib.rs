@@ -2,24 +2,22 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
     (0..garden.len())
         .map(|r| {
             (0..garden[r].len())
-                .map(|c| get_garden_char(garden, r, c))
+                .map(|c| get_garden_char(garden, r as i32, c as i32))
                 .collect::<String>()
         })
         .collect::<Vec<String>>()
 }
 
-fn get_garden_char(garden: &[&str], r: usize, c: usize) -> char {
-    match garden[r].as_bytes()[c] {
+fn get_garden_char(garden: &[&str], r: i32, c: i32) -> char {
+    match garden[r as usize].as_bytes()[c as usize] {
         b'*' => '*',
         _ => {
-            let height = garden.len();
-            let width = garden[r].len();
-            match (-1..=1)
-                .flat_map(|dr| (-1..=1).map(move |dc| (dr, dc)))
-                .filter(|&(dr, dc)| dr != 0 || dc != 0)
-                .map(|(dr, dc)| (r.wrapping_add_signed(dr), c.wrapping_add_signed(dc)))
-                .filter(|&(r, c)| r < height && c < width)
-                .filter(|&(r, c)| garden[r].as_bytes()[c] == b'*')
+            let height = garden.len() as i32;
+            let width = garden[r as usize].len() as i32;
+            match ((r - 1)..=(r + 1))
+                .flat_map(|newr| ((c - 1)..=(c + 1)).map(move |newc| (newr, newc)))
+                .filter(|&(r, c)| r >= 0 && r < height && c >= 0 && c < width)
+                .filter(|&(r, c)| garden[r as usize].as_bytes()[c as usize] == b'*')
                 .count()
             {
                 0 => ' ',
