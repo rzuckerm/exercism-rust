@@ -12,11 +12,10 @@ fn get_garden_char(garden: &[&str], r: i32, c: i32) -> char {
     match garden[r as usize].as_bytes()[c as usize] {
         b'*' => '*',
         _ => {
-            let height = garden.len() as i32;
-            let width = garden[r as usize].len() as i32;
-            match ((r - 1)..=(r + 1))
-                .flat_map(|newr| ((c - 1)..=(c + 1)).map(move |newc| (newr, newc)))
-                .filter(|&(r, c)| r >= 0 && r < height && c >= 0 && c < width)
+            let maxr = garden.len() as i32 - 1;
+            let maxc = garden[r as usize].len() as i32 - 1;
+            match ((r - 1).max(0)..=(r + 1).min(maxr))
+                .flat_map(|newr| ((c - 1).max(0)..=(c + 1).min(maxc)).map(move |newc| (newr, newc)))
                 .filter(|&(r, c)| garden[r as usize].as_bytes()[c as usize] == b'*')
                 .count()
             {
