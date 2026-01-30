@@ -22,6 +22,7 @@
     "pminten",
     "razielgn",
     "rofrol",
+    "senekor",
     "spazm",
     "stringparser",
     "workingjubilee",
@@ -34,7 +35,7 @@
       "Cargo.toml"
     ],
     "test": [
-      "tests/robot-name.rs"
+      "tests/robot_name.rs"
     ],
     "example": [
       ".meta/example.rs"
