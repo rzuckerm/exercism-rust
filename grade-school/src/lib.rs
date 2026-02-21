@@ -12,6 +12,10 @@ impl School {
     }
 
     pub fn add(&mut self, grade: u32, student: &str) {
+        if self.grades.values().any(|s| s.contains(student)) {
+            return;
+        }
+
         self.grades
             .entry(grade)
             .or_default()
